@@ -9,21 +9,25 @@ use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 use winit_input_helper::WinitInputHelper;
 
-mod canvas; 
 
 const WIDTH: u32 = 320;
 const HEIGHT: u32 = 240;
 
 
 fn draw(frame: &mut [u8]) {
-     let mut input = WinitInputHelper::new();
-    let mouse_pos = input.mouse();
-    let canvas = canvas::Canvas::new(HEIGHT as i16, WIDTH as i16);
-    canvas.draw_circle(100, 100, 10, frame);
-    canvas.draw_circle(200, 200, 50, frame);
-    match mouse_pos {
-        Some(cord) => {println!("{:?}", cord);  canvas.draw_circle(cord.0 as i16, cord.1 as i16, 5, frame)},
-        None => println!("pp"),
+    for (i, pixel) in frame.chunks_exact_mut(4).enumerate() {
+        let x = (i % WIDTH as usize) as i16;
+        let y = (i / WIDTH as usize) as i16;
+
+        let rgba = [0xff, 0x00, 0x00, 0xff];
+        let cx = (x-(WIDTH/2) as i16) as f64;
+        let cy = (y-(HEIGHT/2) as i16) as f64;
+    
+        let d = (cx.powf(2.0) + cy.powf(2.0)).sqrt() as i16;
+
+        if d > 100 && d < 110 {
+            pixel.copy_from_slice(&rgba);
+        }
     }
 }
 
@@ -35,7 +39,7 @@ fn main() -> Result<(), Error> {
     let window = {
         let size = LogicalSize::new(WIDTH as f64, HEIGHT as f64);
         WindowBuilder::new()
-            .with_title("War of Ants")
+            .with_title("Hello Pixels")
             .with_inner_size(size)
             .with_min_inner_size(size)
             .build(&event_loop)
@@ -61,14 +65,11 @@ fn main() -> Result<(), Error> {
         }
         // Handle input events
         if input.update(&event) {
-            // Close events;
-            if input.key_pressed(VirtualKeyCode::Escape)  
-                || input.key_pressed(VirtualKeyCode::Q)
-                || input.quit() 
-                {
-                    *control_flow = ControlFlow::Exit;
-                    return;
-                }   
+            // Close events
+            if input.key_pressed(VirtualKeyCode::Escape) || input.quit() {
+                *control_flow = ControlFlow::Exit;
+                return;
+            }
 
             // Resize the window
             if let Some(size) = input.window_resized() {
