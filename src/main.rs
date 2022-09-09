@@ -14,21 +14,58 @@ mod canvas;
 const WIDTH: u32 = 320;
 const HEIGHT: u32 = 240;
 
+struct Coordinate {
+    x: Vec<i16>,
+    y: Vec<i16>, 
+}
 
-fn draw(frame: &mut [u8]) {
-     let mut input = WinitInputHelper::new();
-    let mouse_pos = input.mouse();
-    let canvas = canvas::Canvas::new(HEIGHT as i16, WIDTH as i16);
-    canvas.draw_circle(100, 100, 10, frame);
-    canvas.draw_circle(200, 200, 50, frame);
-    match mouse_pos {
-        Some(cord) => {println!("{:?}", cord);  canvas.draw_circle(cord.0 as i16, cord.1 as i16, 5, frame)},
-        None => println!("pp"),
+impl Coordinate {
+    fn new() -> Coordinate {
+        Coordinate {
+            x: Vec::new(),
+            y: Vec::new(),
+        }
+    }
+    fn len(&self) -> usize {
+        self.x.len()
+    }
+    
+    fn add(&mut self, x: i16, y: i16) {
+        if self.x.len() > 1000 { 
+            self.x.remove(0);  
+            self.y.remove(0);
+        }
+        self.x.push(x);
+        self.y.push(y);
+    }
+}
+
+
+
+fn draw(frame: &mut [u8], input: &WinitInputHelper, coordinate: &mut Coordinate) {
+    let mut canvas = canvas::Canvas::new(HEIGHT as i16, WIDTH as i16, frame);
+    canvas.clear();
+    canvas.draw_circle(100, 100, 10);
+    canvas.draw_circle(200, 200, 50);
+    if input.mouse_held(0) {
+        match input.mouse() {
+            Some(cord) => {
+                coordinate.add(cord.0 as i16, cord.1 as i16); 
+                canvas.draw_circle(cord.0 as i16, cord.1 as i16, 5)
+            },
+            None => (),
+        }
+        
+    }
+
+    for i in 0..coordinate.len() {
+        canvas.draw_circle(coordinate.x[i as usize], coordinate.y[i as usize], 5)
     }
 }
 
 
 fn main() -> Result<(), Error> {
+    let mut coordinate = Coordinate::new();
     env_logger::init();
     let event_loop = EventLoop::new();
     let mut input = WinitInputHelper::new();
@@ -49,7 +86,7 @@ fn main() -> Result<(), Error> {
     event_loop.run(move |event, _, control_flow| {
         // Draw the current frame
         if let Event::RedrawRequested(_) = event {
-            draw(pixels.get_frame());
+            draw(pixels.get_frame(), &input, &mut coordinate);
             if pixels
                 .render()
                 .map_err(|e| error!("pixels.render() failed: {}", e))
