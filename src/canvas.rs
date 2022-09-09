@@ -40,5 +40,19 @@ impl Canvas <'_>{
             }
         }   
     }
+
+    pub fn draw_ant(&mut self, x: i16, y: i16) {
+        for (i, pixel) in self.FRAME.chunks_exact_mut(4).enumerate() {
+            let ax = (i % self.WIDTH as usize) as i16;
+            let ay = (i / self.WIDTH as usize) as i16;
+
+            let rgba = [0xff, 0x00, 0x00, 0xff];
+
+            if  ax == x && ay == y {
+                pixel.copy_from_slice(&rgba);
+            }
+        } 
+    }
+
 }
 
