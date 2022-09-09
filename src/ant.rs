@@ -1,4 +1,4 @@
-use rand::Rng;
+use rand::distributions::{Distribution, Uniform};
 
 use war_of_ants::Coordinate;
 use war_of_ants::NEIGHBOURS; 
@@ -28,7 +28,8 @@ impl Ant {
         fn in_range(rnd: f64, probs: [f64; pos_l], i: usize) -> bool { //TODO: implement in more correct way this shit
                 rnd > probs[i] && rnd > probs[i+1]
         }
-
+        
+        let between = Uniform::from(0..100);
         let mut rng = rand::thread_rng();
         let f_neighbors: [Coordinate; 3]; 
         f_neighbors = self.neighborhood(self.coordinate);
@@ -43,10 +44,10 @@ impl Ant {
         }
         */
         for (i, prob) in probs.iter().enumerate() {
-            let rnd: f64 = rng.gen_range(0..100) as f64;
+            let rnd: f64 = (between.sample(&mut rng)) as f64;
             if i > pos_l { break }
             if in_range(rnd, probs, i) {
-                self.coordinate = NEIGHBOURS[i];
+                self.coordinate = f_neighbors[i];
             }
         }
     }
@@ -58,9 +59,7 @@ impl Ant {
         let mut f_neighbors = [Coordinate::new(0, 0); 3];
         for (i, neighbour) in NEIGHBOURS.iter().enumerate() {
             f_neighbors[i] = coordinate.add(neighbour);
-            print!("{} {}-{} {} |", f_neighbors[i].x, f_neighbors[i].y, neighbour.x, neighbour.y);
         }
-        println!();
         f_neighbors
     }
 
