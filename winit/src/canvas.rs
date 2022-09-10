@@ -38,6 +38,10 @@ impl Canvas {
             }
         }   
     }
+    
+    pub fn draw_ants(&mut self, x: i16, y: i16, frame: &mut [u8]) {
+
+    }
 
     pub fn draw_ant(&mut self, x: i16, y: i16, frame: &mut [u8]) {
         for (i, pixel) in frame.chunks_exact_mut(4).enumerate() {
