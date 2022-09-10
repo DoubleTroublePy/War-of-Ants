@@ -46,7 +46,7 @@ fn main() -> Result<(), Error> {
     };
 
     let pheromones_mt: Vec<Coordinate> = Vec::new();
-    let mut ant = Ant::new(1, Coordinate::new((HEIGHT/2) as i16, (WIDTH/2) as i16), 30, 10);
+    let mut ant = Ant::new(1, Coordinate::new((HEIGHT/2) as i16, (WIDTH/2) as i16), 30, 10, 0);
 
     event_loop.run(move |event, _, control_flow| {
         // Draw the current frame

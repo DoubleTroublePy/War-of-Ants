@@ -41,9 +41,15 @@ impl Clone for Coordinate {
 }
 
 // start > N -> O -> S -> E -
-pub const NEIGHBOURS: [Coordinate; 3] = [
-    Coordinate { x:  1, y:  1}, // 2 -> NO
+pub const NEIGHBOURS: [Coordinate; 8] = [
     Coordinate { x:  1, y:  0},  // 1 -> N
+    Coordinate { x:  1, y:  1}, // 2 -> NO
+    Coordinate { x:  1, y: -1}, // 3 -> O
+    Coordinate { x:  1, y: -1}, // 4 -> SO
+    Coordinate { x:  1, y: -1}, // 5 -> S
+    Coordinate { x:  1, y: -1}, // 6 -> SE
+    Coordinate { x:  1, y: -1}, // 7 -> E
     Coordinate { x:  1, y: -1}, // 8 -> NE
-    ];
+
+];
 
