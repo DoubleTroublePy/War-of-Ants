@@ -1,12 +1,12 @@
 use rand::distributions::{Distribution, Uniform};
 
+use war_of_ants::NEIGHBOURS;
 use war_of_ants::Coordinate;
-use war_of_ants::NEIGHBOURS; 
 use war_of_ants::Direction;
 
-/// formica 
+#[derive(Copy, Clone)] 
 pub struct Ant {
-    id: i32,
+    pub id: i32,
     coordinate: Coordinate,
     lib_cof: i32,
     att_cof: i32,
@@ -40,7 +40,7 @@ impl Ant {
         // randominess
         let between = Uniform::from(0..100);
         let mut rng = rand::thread_rng();
-        let mut probs: [f64; pos_l] = [0.0, 33.3, 66.6, 100.0];
+            let mut probs: [f64; pos_l] = [0.0, (100.0/3.0), (100.0/1.5), 100.0];
         let rnd: f64 = (between.sample(&mut rng)) as f64;
         let mut sel = 0;
         
@@ -113,6 +113,10 @@ impl Ant {
 
     pub fn coordinate_set(&mut self, coordinate: Coordinate) {
         self.coordinate = coordinate;
+    }
+    
+    pub fn direction_get(&self) -> i16 {
+        self.direction.d
     }
 
     fn neighborhood(&self, coordinate: Coordinate) -> [Coordinate; 8] {

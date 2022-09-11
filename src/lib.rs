@@ -1,3 +1,7 @@
+#![deny(clippy::all)]
+#![forbid(unsafe_code)]
+
+
 #[derive(Debug)]
 pub struct Coordinate {
     pub x: i16,
@@ -41,6 +45,7 @@ impl Clone for Coordinate {
     }
  }
 
+#[derive(Copy, Clone)]
 pub struct Direction {
     pub d: i16, // direction 
     n: i16, // nugmber of directions
